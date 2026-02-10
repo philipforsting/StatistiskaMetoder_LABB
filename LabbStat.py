@@ -19,18 +19,24 @@ class LinjearRegression:
 
     #OLS
     def fit(self, X, y):
-        #ta emot X, y
-        # lägg till intercept 
-        # sätt n och d 
-        # spara X och y 
-        # beräkna beta_hat med normalekvationen 
-        # returnera modellen
+ 
         X = np.asarray(X)
-        # tänk på vad som händer om X har fler än 2 dim
         y = np.asarray(y)
-        # len(y) == X.shape[0] → annars är modellen meningslös
 
-        ones = np.ones((X.shape[1], 1))
+        #Error handling
+        if X.ndim == 1: 
+            X = X.reshape(-1, 1)
+        elif X.ndim > 2:
+            raise ValueError("X must be 1D or 2D")
+
+        if y.shape[0] != X.shape[0]:
+            raise ValueError("X and y must have the same number of observations")
+
+        self._n = n = X.shape[0]
+        self._d = d = X.shape[1]
+        self.X = np.column_stack([np.ones(n), X])
+        self.y = y
+        self.beta_hat = np.linalg.pinv(self.X.T @ self.X) @self.X.T @ self.y
 
         return self
     
