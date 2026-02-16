@@ -42,28 +42,6 @@ class LinjearRegression:
         self.y = y        
         self.beta_hat = np.linalg.pinv(self.X.T @ self.X) @self.X.T @ self.y
         return self
-    
-    def predict(self, X_new): #för att använda OLS
-        X_new = np.asarray(X_new)
-        
-        if self.beta_hat is None:
-            raise ValueError("Model has not been fitted yet")
-
-        # Dimension handling
-        if X_new.ndim == 1: 
-            X_new = X_new.reshape(-1, 1)
-        elif X_new.ndim > 2:
-            raise ValueError("X must be 1D or 2D")
-        
-        # NaN and shape missmatch handling
-        if np.isnan(X_new).any():
-            raise ValueError("X contains NaN errors?") # Är detta rimligt agerande? Kanske ska man ta bort rader med NaN? Oklart...
-        if X_new.shape[1] != self.d:
-            raise ValueError("X has incorrect number of features") # Är detta rimligt agerande? Kanske ska man ta bort rader med NaN? Oklart...
-        
-        n_new = X_new.shape[0]
-        X_new = np.column_stack([np.ones(n_new), X_new])
-        return X_new @ self.beta_hat
 
 
     def sse(self):
