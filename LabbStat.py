@@ -17,7 +17,7 @@ class LinjearRegression:
     def d(self):
         return self._d
 
-    #OLS
+    #OLS, Ordinary Least Squares
     def fit(self, X, y):
  
         X = np.asarray(X)
@@ -31,22 +31,26 @@ class LinjearRegression:
         
         # NaN and shape missmatch handling
         if np.isnan(X).any():
-            raise ValueError("X contains NaN errors?") # Är detta rimligt agerande? Kanske ska man ta bort rader med NaN? Oklart...
+            raise ValueError("X contains NaN errors") # Är detta rimligt agerande? Kanske ska man ta bort rader med NaN? Oklart...
+        if np.isnan(y).any():
+            raise ValueError("X contains NaN errors") # Är detta rimligt agerande? Kanske ska man ta bort rader med NaN? Oklart...
         if y.shape[0] != X.shape[0]:
             raise ValueError("X and y must have the same number of observations")
 
-        #Calculating output
-        self._n = n = X.shape[0]
-        self._d = d = X.shape[1]
-        self.X = np.column_stack([np.ones(n), X])
+        # Calculating output
+        self._n = X.shape[0]
+        self._d = X.shape[1]
+        self.X = np.column_stack([np.ones(self._n), X])
         self.y = y        
         self.beta_hat = np.linalg.pinv(self.X.T @ self.X) @self.X.T @ self.y
         return self
 
 
     def sse(self):
+        # NaN and shape missmatch handling
         if (self.beta_hat is None) or (self.X is None):
             raise ValueError("Model has not been fitted yet")
+        # Calculating output
         y_hat = self.X @ self.beta_hat
         return np.sum(np.square(self.y - y_hat)) #
 
